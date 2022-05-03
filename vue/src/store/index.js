@@ -9,11 +9,51 @@ const store = createStore({
       data: {},
       token: sessionStorage.getItem("TOKEN"),
     },
+    currentSurvey: {
+      loading: false,
+      data: {},
+    },
     surveys: null,
     questionTypes: ["text", "select", "radio", "checkbox", "textarea"],
   },
   getters: {},
   actions: {
+    getSurvey({ commit }, id) {
+      commit("setCurrentSurveyLoading", true);
+      return axiosClient
+        .get(`/survey/${id}`)
+        .then((res) => {
+          commit("setCurrentSurvey", res.data);
+          commit("setCurrentSurveyLoading", false);
+          return res;
+        })
+        .catch((err) => {
+          commit("setCurrentSurvey", false);
+          throw err;
+        });
+    },
+    saveSurvey({ commit }, survey) {
+      delete survey.image_url;
+      let response;
+      if (survey.id) {
+        response = axiosClient
+          .put(`/survey/${survey.id}`, survey)
+          .then((res) => {
+            commit("setCurrentSurvey", res.data);
+            return res;
+          });
+      } else {
+        response = axiosClient.post(`/survey`, survey).then((res) => {
+          commit("setCurrentSurvey", res.data);
+          return res;
+        });
+      }
+      return response;
+    },
+    // eslint-disable-next-line no-empty-pattern
+    deleteSurvey({}, id) {
+      return axiosClient.delete(`/survey/${id}`);
+    },
     register({ commit }, user) {
       return axiosClient.post("/register", user).then(({ data }) => {
         commit("setUser", data);
@@ -34,6 +74,12 @@ const store = createStore({
     },
   },
   mutations: {
+    setCurrentSurveyLoading: (state, loading) => {
+      state.currentSurvey.loading = loading;
+    },
+    setCurrentSurvey: (state, survey) => {
+      state.currentSurvey.data = survey.data;
+    },
     logout: (state) => {
       state.user.token = null;
       state.user.data = {};

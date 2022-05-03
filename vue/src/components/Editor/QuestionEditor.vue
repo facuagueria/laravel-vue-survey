@@ -7,8 +7,8 @@
       <!-- Add new question -->
       <button
         type="button"
-        class="flex items-center text-xs py-1 px-3 mr-2 rounded-sm text-white bg-gray-600 hover:bg-gray-700"
         @click="addQuestion()"
+        class="flex items-center text-xs py-1 px-3 mr-2 rounded-sm text-white bg-gray-600 hover:bg-gray-700"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -29,8 +29,8 @@
       <!-- Delete question -->
       <button
         type="button"
-        class="flex items-center text-xs py-1 px-3 rounded-sm border border-transparent text-red-500 hover:border-red-600"
         @click="deleteQuestion()"
+        class="flex items-center text-xs py-1 px-3 rounded-sm border border-transparent text-red-500 hover:border-red-600"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -59,12 +59,12 @@
         >Question Text</label
       >
       <input
-        :id="'question_text_' + model.data"
-        v-model="model.question"
         type="text"
         :name="'question_text_' + model.data"
-        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+        v-model="model.question"
         @change="dataChange"
+        :id="'question_text_' + model.data"
+        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
       />
     </div>
     <!--/ Question -->
@@ -76,10 +76,10 @@
       >
       <select
         id="question_type"
-        v-model="model.type"
         name="question_type"
-        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        v-model="model.type"
         @change="typeChange"
+        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
       >
         <option v-for="type in questionTypes" :key="type" :value="type">
           {{ upperCaseFirst(type) }}
@@ -97,11 +97,11 @@
       >Description</label
     >
     <textarea
-      :id="'question_description_' + model.id"
-      v-model="model.description"
       :name="'question_description_' + model.id"
-      class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+      v-model="model.description"
       @change="dataChange"
+      :id="'question_description_' + model.id"
+      class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
     />
   </div>
   <!--/ Question Description -->
@@ -115,8 +115,8 @@
         <!-- Add new option -->
         <button
           type="button"
-          class="flex items-center text-xs py-1 px-2 rounded-sm text-white bg-gray-600 hover:bg-gray-700"
           @click="addOption()"
+          class="flex items-center text-xs py-1 px-2 rounded-sm text-white bg-gray-600 hover:bg-gray-700"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -149,17 +149,17 @@
       >
         <span class="w-6 text-sm"> {{ index + 1 }}. </span>
         <input
-          v-model="option.text"
           type="text"
           tabindex="1"
-          class="w-full rounded-sm py-1 px-2 text-xs border border-gray-300 focus:border-indigo-500"
+          v-model="option.text"
           @change="dataChange"
+          class="w-full rounded-sm py-1 px-2 text-xs border border-gray-300 focus:border-indigo-500"
         />
         <!-- Delete Option -->
         <button
           type="button"
-          class="h-6 w-6 rounded-full flex items-center justify-center border border-transparent transition-colors hover:border-red-100"
           @click="removeOption(option)"
+          class="h-6 w-6 rounded-full flex items-center justify-center border border-transparent transition-colors hover:border-red-100"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -185,59 +185,59 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { v4 as uuidv4 } from "uuid";
+import { computed, ref } from "@vue/reactivity";
 import store from "../../store";
-// import { v4 as uuidv4 } from "uuid";
-
-// eslint-disable-next-line no-undef
 const props = defineProps({
   question: Object,
   index: Number,
 });
-// eslint-disable-next-line no-undef
-const emit = defineEmits(["events", "addQuestion", "deleteQuestion"]);
-
+const emit = defineEmits(["change", "addQuestion", "deleteQuestion"]);
+// Re-create the whole question data to avoid unintentional reference change
 const model = ref(JSON.parse(JSON.stringify(props.question)));
-
+// Get question types from vuex
 const questionTypes = computed(() => store.state.questionTypes);
-
 function upperCaseFirst(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
-function shouldHaveOptions() {
-  return ["select", "radio", "checkbox"].includes(model.value.type);
-}
-
 function getOptions() {
   return model.value.data.options;
 }
 function setOptions(options) {
   model.value.data.options = options;
 }
-
-function addOptions() {
+// Check if the question should have options
+function shouldHaveOptions() {
+  return ["select", "radio", "checkbox"].includes(model.value.type);
+}
+// Add option
+function addOption() {
   setOptions([...getOptions(), { uuid: uuidv4(), text: "" }]);
   dataChange();
 }
-
+// Remove option
 function removeOption(op) {
   setOptions(getOptions().filter((opt) => opt !== op));
   dataChange();
 }
-
 function typeChange() {
   if (shouldHaveOptions()) {
     setOptions(getOptions() || []);
   }
   dataChange();
 }
-
+// Emit the data change
 function dataChange() {
-  const data = JSON.parse(JSON.stringify(model.value));
+  const data = model.value;
   if (!shouldHaveOptions()) {
     delete data.data.options;
   }
   emit("change", data);
+}
+function addQuestion() {
+  emit("addQuestion", props.index + 1);
+}
+function deleteQuestion() {
+  emit("deleteQuestion", props.question);
 }
 </script>
