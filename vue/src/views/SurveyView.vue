@@ -119,10 +119,7 @@
 
           <!-- Description -->
           <div>
-            <label
-              for="description"
-              class="block text-sm font-medium text-gray-700"
-            >
+            <label for="about" class="block text-sm font-medium text-gray-700">
               Description
             </label>
             <div class="mt-1">
@@ -203,7 +200,7 @@
             </button>
             <!--/ Add new question -->
           </h3>
-          <div class="text-center text-gray-600">
+          <div v-if="!model.questions.length" class="text-center text-gray-600">
             You don't have any questions created
           </div>
           <div v-for="(question, index) in model.questions" :key="question.id">
@@ -232,37 +229,37 @@
 
 <script setup>
 import { v4 as uuidv4 } from "uuid";
-import PageComponent from "../components/PageComponent.vue";
-import QuestionEditor from "../components/editor/QuestionEditor.vue";
-import store from "../store";
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-
+import store from "../store";
+import PageComponent from "../components/PageComponent.vue";
+import QuestionEditor from "../components/editor/QuestionEditor.vue";
 const router = useRouter();
 const route = useRoute();
-
+// Get survey loading state, which only changes when we fetch survey from backend
 const surveyLoading = computed(() => store.state.currentSurvey.loading);
-
-//Create an empty survey
+// Create empty survey
 let model = ref({
   title: "",
+  slug: "",
   status: false,
   description: null,
+  image: null,
   image_url: null,
   expire_date: null,
   questions: [],
 });
-
+// Watch to current survey data change and when this happens we update local model
 watch(
   () => store.state.currentSurvey.data,
   (newVal, oldVal) => {
     model.value = {
       ...JSON.parse(JSON.stringify(newVal)),
-      status: newVal.status !== "draft",
+      status: !!newVal.status,
     };
   }
 );
-
+// If the current component is rendered on survey update route we make a request to fetch survey
 if (route.params.id) {
   store.dispatch("getSurvey", route.params.id);
 }
@@ -270,14 +267,13 @@ function onImageChoose(ev) {
   const file = ev.target.files[0];
   const reader = new FileReader();
   reader.onload = () => {
-    //The field to send on backend and apply validations
+    // The field to send on backend and apply validations
     model.value.image = reader.result;
-
-    //The field to display here
+    // The field to display here
     model.value.image_url = reader.result;
+    ev.target.value = "";
   };
   reader.readAsDataURL(file);
-  // ev.preventDefault();
 }
 function addQuestion(index) {
   const newQuestion = {
@@ -289,12 +285,15 @@ function addQuestion(index) {
   };
   model.value.questions.splice(index, 0, newQuestion);
 }
-
 function deleteQuestion(question) {
   model.value.questions = model.value.questions.filter((q) => q !== question);
 }
-
 function questionChange(question) {
+  // Important to explicitelly assign question.data.options, because otherwise it is a Proxy object
+  // and it is lost in JSON.stringify()
+  if (question.data.options) {
+    question.data.options = [...question.data.options];
+  }
   model.value.questions = model.value.questions.map((q) => {
     if (q.id === question.id) {
       return JSON.parse(JSON.stringify(question));
@@ -302,10 +301,19 @@ function questionChange(question) {
     return q;
   });
 }
-
+/**
+ * Create or update survey
+ */
 function saveSurvey() {
-  console.log(model.value);
-  store.dispatch("saveSurvey", model.value).then(({ data }) => {
+  let action = "created";
+  if (model.value.id) {
+    action = "updated";
+  }
+  store.dispatch("saveSurvey", { ...model.value }).then(({ data }) => {
+    store.commit("notify", {
+      type: "success",
+      message: "The survey was successfully " + action,
+    });
     router.push({
       name: "SurveyView",
       params: { id: data.data.id },
@@ -319,8 +327,12 @@ function deleteSurvey() {
     )
   ) {
     store.dispatch("deleteSurvey", model.value.id).then(() => {
-      router.push({ name: "Surveys" });
+      router.push({
+        name: "Surveys",
+      });
     });
   }
 }
 </script>
+
+<style></style>
