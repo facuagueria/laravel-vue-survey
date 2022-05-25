@@ -47,11 +47,33 @@
                     class="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
                   >
                     <span class="sr-only">Open user menu</span>
-                    <img
-                      class="h-8 w-8 rounded-full"
-                      :src="user.imageUrl"
-                      alt=""
-                    />
+
+                    <div class="mx-3">
+                      <div
+                        class="text-left text-base font-medium leading-none text-white"
+                      >
+                        {{ user.name }}
+                      </div>
+                      <div
+                        class="text-sm font-medium leading-none text-gray-400"
+                      >
+                        {{ user.email }}
+                      </div>
+                    </div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-8 w-8"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="white"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
                   </MenuButton>
                 </div>
                 <transition
@@ -105,13 +127,26 @@
                 : 'text-gray-300 hover:bg-gray-700 hover:text-white',
               'block px-3 py-2 rounded-md text-base font-medium',
             ]"
-            >{{ item.name }}</router-link
-          >
+            >{{ item.name }}
+          </router-link>
         </div>
         <div class="pt-4 pb-3 border-t border-gray-700">
           <div class="flex items-center px-5">
             <div class="flex-shrink-0">
-              <img class="h-10 w-10 rounded-full" :src="user.imageUrl" alt="" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-8 w-8"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="white"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
             </div>
             <div class="ml-3">
               <div class="text-base font-medium leading-none text-white">
@@ -124,11 +159,11 @@
           </div>
           <div class="mt-3 px-2 space-y-1">
             <DisclosureButton
-              @click="logout"
               as="a"
+              @click="logout"
               class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700 cursor-pointer"
-              >Sign out</DisclosureButton
-            >
+              >Sign out
+            </DisclosureButton>
           </div>
         </div>
       </DisclosurePanel>
