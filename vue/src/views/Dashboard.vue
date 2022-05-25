@@ -28,13 +28,14 @@
         </div>
       </div>
       <div
-        class="row-span-2 bg-white shadow-md p-4 order-3 lg:order-1 animate-fade-in-down"
+        v-if="data.latestSurvey"
+        class="row-span-2 bg-white shadow-md p-3 order-3 lg:order-1 animate-fade-in-down"
       >
         <h3 class="text-2xl font-semibold">Latest Survey</h3>
         <img
           :src="data.latestSurvey.image_url"
           alt=""
-          class="w-[240px] mx-auto"
+          class="w-[240px] mx-auto py-2"
         />
         <h3 class="font-bold text-xl mb-3">{{ data.latestSurvey.title }}</h3>
         <div class="flex justify-between text-sm mb-1">
@@ -80,6 +81,7 @@
           </router-link>
 
           <button
+            @click="alertMessage"
             class="flex py-2 px-4 border border-transparent text-sm rounded-md text-indigo-500 hover:bg-indigo-700 hover:text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             <svg
@@ -107,6 +109,7 @@
           <h3 class="text-2xl font-semibold">Latest Answers</h3>
           <a
             href="javascript:void(0)"
+            @click="alertMessage"
             class="text-sm text-blue-500 hover:decoration-blue-500"
           >
             View all
@@ -140,4 +143,8 @@ const loading = computed(() => store.state.dashboard.loading);
 const data = computed(() => store.state.dashboard.data);
 
 store.dispatch("getDashboardData");
+
+function alertMessage() {
+  alert("It doesn't implemented yet!");
+}
 </script>
