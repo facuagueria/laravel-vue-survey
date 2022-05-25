@@ -7,7 +7,7 @@ const store = createStore({
   state: {
     user: {
       data: {},
-      token: sessionStorage.getItem("TOKEN"),
+      token: localStorage.getItem("TOKEN"),
     },
     dashboard: {
       loading: false,
@@ -150,11 +150,13 @@ const store = createStore({
       state.user.token = null;
       state.user.data = {};
       sessionStorage.removeItem("TOKEN");
+      localStorage.removeItem("TOKEN");
     },
     setUser: (state, userData) => {
       state.user.token = userData.token;
       state.user.data = userData.user;
       sessionStorage.setItem("TOKEN", userData.token);
+      localStorage.setItem("TOKEN", userData.token);
     },
     notify: (state, { message, type }) => {
       state.notification.show = true;

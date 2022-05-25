@@ -54,9 +54,11 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !store.state.user.token) {
+  if (to.meta.requiresAuth && !localStorage.getItem("TOKEN")) {
+    //!store.state.user.token
     next({ name: "Login" });
-  } else if (store.state.user.token && to.meta.isGuest) {
+  } else if (localStorage.getItem("TOKEN") && to.meta.isGuest) {
+    //store.state.user.token
     next({ name: "Dashboard" });
   } else {
     next();
