@@ -28,77 +28,78 @@
         </div>
       </div>
       <div
-        v-if="data.latestSurvey"
         class="row-span-2 bg-white shadow-md p-3 order-3 lg:order-1 animate-fade-in-down"
       >
         <h3 class="text-2xl font-semibold">Latest Survey</h3>
-        <img
-          :src="data.latestSurvey.image_url"
-          alt=""
-          class="w-[240px] mx-auto py-2"
-        />
-        <h3 class="font-bold text-xl mb-3">{{ data.latestSurvey.title }}</h3>
-        <div class="flex justify-between text-sm mb-1">
-          <div>Create Date:</div>
-          <div>{{ data.latestSurvey.created_at }}</div>
-        </div>
-        <div class="flex justify-between text-sm mb-1">
-          <div>Expire Date:</div>
-          <div>{{ data.latestSurvey.expire_date }}</div>
-        </div>
-        <div class="flex justify-between text-sm mb-1">
-          <div>Status:</div>
-          <div>{{ data.latestSurvey.status ? "Active" : "Draft" }}</div>
-        </div>
-        <div class="flex justify-between text-sm mb-1">
-          <div>Questions:</div>
-          <div>{{ data.latestSurvey.questions }}</div>
-        </div>
-        <div class="flex justify-between text-sm mb-3">
-          <div>Answers:</div>
-          <div>{{ data.latestSurvey.answers }}</div>
-        </div>
-        <div class="flex justify-between">
-          <router-link
-            :to="{ name: 'SurveyView', params: { id: data.latestSurvey.id } }"
-            class="flex py-2 px-4 border border-transparent text-sm rounded-md text-indigo-500 hover:bg-indigo-700 hover:text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 mr-2"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        <div v-if="data.latestSurvey">
+          <img
+            :src="data.latestSurvey.image_url"
+            alt=""
+            class="w-[240px] mx-auto py-2"
+          />
+          <h3 class="font-bold text-xl mb-3">{{ data.latestSurvey.title }}</h3>
+          <div class="flex justify-between text-sm mb-1">
+            <div>Create Date:</div>
+            <div>{{ data.latestSurvey.created_at }}</div>
+          </div>
+          <div class="flex justify-between text-sm mb-1">
+            <div>Expire Date:</div>
+            <div>{{ data.latestSurvey.expire_date }}</div>
+          </div>
+          <div class="flex justify-between text-sm mb-1">
+            <div>Status:</div>
+            <div>{{ data.latestSurvey.status ? "Active" : "Draft" }}</div>
+          </div>
+          <div class="flex justify-between text-sm mb-1">
+            <div>Questions:</div>
+            <div>{{ data.latestSurvey.questions }}</div>
+          </div>
+          <div class="flex justify-between text-sm mb-3">
+            <div>Answers:</div>
+            <div>{{ data.latestSurvey.answers }}</div>
+          </div>
+          <div class="flex justify-between">
+            <router-link
+              :to="{ name: 'SurveyView', params: { id: data.latestSurvey.id } }"
+              class="flex py-2 px-4 border border-transparent text-sm rounded-md text-indigo-500 hover:bg-indigo-700 hover:text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-              />
-            </svg>
-            Edit Survey
-          </router-link>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                />
+              </svg>
+              Edit Survey
+            </router-link>
 
-          <button
-            @click="alertMessage"
-            class="flex py-2 px-4 border border-transparent text-sm rounded-md text-indigo-500 hover:bg-indigo-700 hover:text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 mr-2"
-              viewBox="0 0 20 20"
-              fill="currentColor"
+            <button
+              @click="alertMessage"
+              class="flex py-2 px-4 border border-transparent text-sm rounded-md text-indigo-500 hover:bg-indigo-700 hover:text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-              <path
-                fill-rule="evenodd"
-                d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            View Answers
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-2"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                <path
+                  fill-rule="evenodd"
+                  d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              View Answers
+            </button>
+          </div>
         </div>
       </div>
       <div
