@@ -6,7 +6,7 @@ import axiosClient from "../axios";
 const store = createStore({
   state: {
     user: {
-      data: {},
+      data: JSON.parse(localStorage.getItem("USER")),
       token: localStorage.getItem("TOKEN"),
     },
     dashboard: {
@@ -157,6 +157,7 @@ const store = createStore({
       state.user.data = userData.user;
       sessionStorage.setItem("TOKEN", userData.token);
       localStorage.setItem("TOKEN", userData.token);
+      localStorage.setItem("USER", JSON.stringify(userData.user));
     },
     notify: (state, { message, type }) => {
       state.notification.show = true;
